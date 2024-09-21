@@ -21,7 +21,7 @@ def allowed_file(filename):
 @app.route('/')
 def home():
     upload_dir = app.config['UPLOAD_FOLDER']
-    files = [f for f in os.listdir(upload_dir) if os.path.isfile(os.path.join(upload_dir, f))]
+    files = [f for f in os.listdir(upload_dir) if os.path.isfile(os.path.join(upload_dir, f)) and allowed_file(f)]
     
     if files:
         # Sort files by modification time, most recent first
