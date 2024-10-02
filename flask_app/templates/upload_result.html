@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Upload Result</h1>
+<img src="{{ url_for('uploaded_file', filename=processed_file_path) }}" alt="Processed Playground Image" style="max-width: 100%; height: auto;">
+
+<h2>Extracted Playground Image Attributes</h2>
+<table border="1">
+    <tr>
+        <th>Attribute</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>URL</td>
+        <td>{{ playground_image.url }}</td>
+    </tr>
+    <tr>
+        <td>Taken At</td>
+        <td>{{ playground_image.taken_at }}</td>
+    </tr>
+    <tr>
+        <td>Children Detected</td>
+        <td>{{ playground_image.children_detected }}</td>
+    </tr>
+    <tr>
+        <td>Needs Face Blurring</td>
+        <td>{{ playground_image.needs_face_blurring }}</td>
+    </tr>
+    <tr>
+        <td>Features Detected</td>
+        <td>
+            <ul>
+                {% for feature in playground_image.features_detected %}
+                <li>{{ feature.primary_name }} (Aliases: {{ feature.aliases|join(', ') }})</li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>Estimated Age Range</td>
+        <td>
+            {% if playground_image.estimated_age_range %}
+            {{ playground_image.estimated_age_range.min_age }} - {{ playground_image.estimated_age_range.max_age }}
+            {% else %}
+            Not available
+            {% endif %}
+        </td>
+    </tr>
+</table>
+{% endblock %}

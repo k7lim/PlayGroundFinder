@@ -2,6 +2,8 @@ import os
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import logging
+from process_playground_image import process_playground_image
+from models import PlaygroundImage
 
 # Add this near the top of your file
 logging.basicConfig(level=logging.DEBUG)
@@ -56,7 +58,12 @@ def upload():
             logging.debug(f"Saving file to: {filepath}")
             file.save(filepath)
             logging.debug(f"File saved successfully")
-            return f'File {filename} uploaded successfully'
+
+            # Process the uploaded image
+            processed_file_path, playground_image = process_playground_image(filepath)
+
+            # Render the result page with the processed image path and playground image attributes
+            return render_template('upload_result.html', processed_file_path=processed_file_path, playground_image=playground_image)
         else:
             logging.debug(f"File not allowed: {file.filename}")
     return render_template('upload.html')
