@@ -1,78 +1,91 @@
-from pydantic import BaseModel, Field, HttpUrl
-from typing import List, Optional, Set
+from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, DateTime, Enum, ForeignKey
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import datetime
-from enum import Enum
+from enum import Enum as PyEnum
 
-class HostLocationType(str, Enum):
+Base = declarative_base()
+
+class HostLocationType(str, PyEnum):
     PUBLIC_PARK = "public_park"
     SCHOOL = "school"
     SHOPPING_AREA = "shopping_area"
     OTHER = "other"
 
-class PlaygroundFeature(BaseModel):
-    primary_name: str
-    aliases: Set[str]
+class PlaygroundFeatureOrm(Base):
+    __tablename__ = 'playground_features'
+    id = Column(Integer, primary_key=True)
+    primary_name = Column(String, nullable=False)
+    aliases = Column(String, nullable=True)  # Store aliases as a comma-separated string
 
-class AgeRange(BaseModel):
-    min_age: int = Field(..., ge=0, le=18)
-    max_age: int = Field(..., ge=0, le=18)
+    @hybrid_property
+    def aliases_set(self):
+        return set(self.aliases.split(',')) if self.aliases else set()
 
-class Location(BaseModel):
-    latitude: float = Field(..., ge=-90, le=90)
-    longitude: float = Field(..., ge=-180, le=180)
+    @aliases_set.setter
+    def aliases_set(self, value):
+        self.aliases = ','.join(value)
 
-class Address(BaseModel):
-    street: str
-    city: str
-    state: str
-    postal_code: str
-    country: str
+class AgeRangeOrm(Base):
+    __tablename__ = 'age_ranges'
+    id = Column(Integer, primary_key=True)
+    min_age = Column(Integer, nullable=False)
+    max_age = Column(Integer, nullable=False)
 
-class HostLocation(BaseModel):
-    name: str
-    type: HostLocationType
-    address: Address
-    location: Location
+class LocationOrm(Base):
+    __tablename__ = 'locations'
+    id = Column(Integer, primary_key=True)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
 
-class PlaygroundImage(BaseModel):
-    url: HttpUrl
-    taken_at: datetime
-    features_detected: List[PlaygroundFeature]
-    children_detected: bool
-    estimated_age_range: Optional[AgeRange]
-    needs_face_blurring: bool
+class AddressOrm(Base):
+    __tablename__ = 'addresses'
+    id = Column(Integer, primary_key=True)
+    street = Column(String, nullable=False)
+    city = Column(String, nullable=False)
+    state = Column(String, nullable=False)
+    postal_code = Column(String, nullable=False)
+    country = Column(String, nullable=False)
 
-class Playground(BaseModel):
-    id: str
-    name: str
-    host_location: HostLocation
-    features: List[PlaygroundFeature]
-    images: List[PlaygroundImage]
-    recommended_age_range: AgeRange
-    last_updated: datetime
+class HostLocationOrm(Base):
+    __tablename__ = 'host_locations'
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    type = Column(Enum(HostLocationType), nullable=False)
+    address_id = Column(Integer, ForeignKey('addresses.id'))
+    location_id = Column(Integer, ForeignKey('locations.id'))
+    address = relationship("AddressOrm")
+    location = relationship("LocationOrm")
 
-class PlaygroundSearchCriteria(BaseModel):
-    features: Optional[List[str]]  # Can search by primary name or alias
-    location: Optional[Location]
-    max_distance_km: Optional[float] = Field(None, ge=0)
-    age_range: Optional[AgeRange]
+class PlaygroundImageOrm(Base):
+    __tablename__ = 'playground_images'
+    id = Column(Integer, primary_key=True)
+    url = Column(String, nullable=False)
+    taken_at = Column(DateTime, nullable=False)
+    children_detected = Column(Boolean, nullable=False)
+    needs_face_blurring = Column(Boolean, nullable=False)
+    playground_id = Column(Integer, ForeignKey('playgrounds.id'))
+    estimated_age_range_id = Column(Integer, ForeignKey('age_ranges.id'))
+    estimated_age_range = relationship("AgeRangeOrm")
+    features_detected = relationship("PlaygroundFeatureOrm", secondary='playground_image_features')
 
-class PlaygroundSearchResult(BaseModel):
-    playgrounds: List[Playground]
-    total_count: int
+class PlaygroundOrm(Base):
+    __tablename__ = 'playgrounds'
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    host_location_id = Column(Integer, ForeignKey('host_locations.id'))
+    host_location = relationship("HostLocationOrm")
+    features = relationship("PlaygroundFeatureOrm", secondary='playground_features')
+    images = relationship("PlaygroundImageOrm")
+    recommended_age_range_id = Column(Integer, ForeignKey('age_ranges.id'))
+    recommended_age_range = relationship("AgeRangeOrm")
+    last_updated = Column(DateTime, nullable=False, default=datetime.utcnow)
 
-# Pre-defined playground features with aliases
-COMMON_PLAYGROUND_FEATURES = [
-    PlaygroundFeature(primary_name="swing", aliases={"swings", "swingset"}),
-    PlaygroundFeature(primary_name="slide", aliases={"slides", "slippery slide"}),
-    PlaygroundFeature(primary_name="monkey_bars", aliases={"jungle gym", "climbing bars"}),
-    PlaygroundFeature(primary_name="seesaw", aliases={"teeter-totter", "teeterboard"}),
-    PlaygroundFeature(primary_name="climbing_frame", aliases={"climbing structure", "play structure"}),
-    PlaygroundFeature(primary_name="sandbox", aliases={"sand pit", "sand box"}),
-    PlaygroundFeature(primary_name="merry_go_round", aliases={"roundabout", "carousel"}),
-    PlaygroundFeature(primary_name="spring_rider", aliases={"rocking horse", "spring rocker"}),
-    PlaygroundFeature(primary_name="playhouse", aliases={"play house", "wendy house"}),
-    PlaygroundFeature(primary_name="balance_beam", aliases={"balance bar"}),
-    PlaygroundFeature(primary_name="tire_swing", aliases={"tyre swing"}),
-    PlaygroundFeature(primary_name="zipline", aliases={"flying fox", "zip wire"}),
-]
+# Create an engine and bind it to the Base
+engine = create_engine('sqlite:///playgrounds.db')
+Base.metadata.create_all(engine)
+
+# Create a session
+Session = sessionmaker(bind=engine)
+session = Session()
