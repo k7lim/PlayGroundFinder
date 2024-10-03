@@ -24,7 +24,7 @@ def allowed_file(filename):
 def home():
     upload_dir = app.config['UPLOAD_FOLDER']
     files = [f for f in os.listdir(upload_dir) if os.path.isfile(os.path.join(upload_dir, f)) and allowed_file(f)]
-    
+
     if files:
         # Sort files by modification time, most recent first
         files.sort(key=lambda x: os.path.getmtime(os.path.join(upload_dir, x)), reverse=True)
@@ -33,7 +33,7 @@ def home():
     else:
         most_recent_image = None
         logging.debug("No images found in uploads directory")
-    
+
     return render_template('home.html', recent_image=most_recent_image)
 
 @app.route('/uploads/<filename>')
