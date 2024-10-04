@@ -1,6 +1,6 @@
-from instructor_utils import identify_object_from_image
-from models import PlaygroundImage
-from image_utils import process_image
+from flask_app.utils.instructor_utils import identify_object_from_image
+from flask_app.models import PlaygroundImage
+from flask_app.utils.image_utils import process_image
 
 def process_playground_image(image_input: str) -> PlaygroundImage:
     """
