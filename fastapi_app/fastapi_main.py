@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from models import Base, PlaygroundImageOrm, session, PlaygroundOrm, HostLocationOrm, AddressOrm, LocationOrm, AgeRangeOrm, PlaygroundFeatureOrm
+from flask_app.models import Base, PlaygroundImageOrm, session, PlaygroundOrm, HostLocationOrm, AddressOrm, LocationOrm, AgeRangeOrm, PlaygroundFeatureOrm
 import os
 from process_playground_image import process_playground_image
 from schemas import PlaygroundImage, Playground
