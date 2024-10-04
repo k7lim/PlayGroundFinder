@@ -61,6 +61,9 @@ def upload():
 
             # Process the uploaded image
             processed_file_path, playground_image = process_playground_image(filepath)
+            
+            # Get just the filename from the processed_file_path
+            processed_filename = os.path.basename(processed_file_path)
 
             if playground_image:
                 # Convert Pydantic model to dict for template rendering
@@ -68,8 +71,8 @@ def upload():
             else:
                 playground_image_dict = None
 
-            # Render the result page with the processed image path and playground image attributes
-            return render_template('upload_result.html', processed_file_path=processed_file_path, playground_image=playground_image_dict)
+            # Render the result page with the processed image filename and playground image attributes
+            return render_template('upload_result.html', processed_filename=processed_filename, playground_image=playground_image_dict)
         else:
             logging.debug(f"File not allowed: {file.filename}")
     return render_template('upload.html')

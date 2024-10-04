@@ -8,9 +8,8 @@ import time
 from requests.exceptions import SSLError, RequestException, HTTPError
 
 # Add logger
-logging.basicConfig()
-logger = logging.getLogger("app")
-logger.setLevel("INFO")
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 def process_image(image_input: str, max_retries=3, retry_delay=1, output_dir="uploads"):
     """
@@ -59,6 +58,7 @@ def process_image(image_input: str, max_retries=3, retry_delay=1, output_dir="up
         os.makedirs(output_dir, exist_ok=True)
         processed_file_path = os.path.join(output_dir, f"processed_{int(time.time())}.{image_format}")
         resized_image.save(processed_file_path, format=image_format)
+        logger.debug(f"Saved processed image to: {processed_file_path}")
         image = resized_image
 
     buffered = BytesIO()
