@@ -1,8 +1,8 @@
-from instructor_utils import identify_object_from_image
-from models import PlaygroundImage
-from image_utils import process_image
+from .instructor_utils import identify_object_from_image
+from models import PlaygroundImageOrm
+from .image_utils import process_image
 
-def process_playground_image(image_input: str) -> PlaygroundImage:
+def process_playground_image(image_input: str) -> PlaygroundImageOrm:
     """
     Given an image input (URL, base64 string, or file path), identify a Outfit object in the image
     """
@@ -10,7 +10,7 @@ def process_playground_image(image_input: str) -> PlaygroundImage:
     image_data, image_format, processed_file_path = process_image(image_input)
 
     # Identify the outfit from the image
-    outfit = identify_object_from_image(image_data, PlaygroundImage, image_format)
+    outfit = identify_object_from_image(image_data, PlaygroundImageOrm, image_format)
     return processed_file_path, outfit
 
 def main(image_str: str):

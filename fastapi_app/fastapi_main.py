@@ -4,8 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from ..flask_app.models import Base, PlaygroundImageOrm, session, PlaygroundOrm, HostLocationOrm, AddressOrm, LocationOrm, AgeRangeOrm, PlaygroundFeatureOrm
 import os
-from process_playground_image import process_playground_image
-from schemas import PlaygroundImage, Playground
+from ..flask_app.utils.process_playground_image import process_playground_image
+from  ..flask_app.schemas import PlaygroundImage, Playground
 
 # Create an engine and bind it to the Base
 engine = create_engine('sqlite:///playgrounds.db')
