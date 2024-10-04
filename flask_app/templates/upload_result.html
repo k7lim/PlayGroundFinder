@@ -30,7 +30,7 @@
         <td>
             <ul>
                 {% for feature in playground_image.features_detected %}
-                <li>{{ feature.primary_name }} (Aliases: {{ feature.aliases|join(', ') }})</li>
+                <li>{{ feature.primary_name }} (Aliases: {{ feature.aliases }})</li>
                 {% endfor %}
             </ul>
         </td>
