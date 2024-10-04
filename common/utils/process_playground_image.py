@@ -1,17 +1,17 @@
 from common.utils.instructor_utils import identify_object_from_image
-from common.models import PlaygroundImageOrm
+from common.schemas import PlaygroundImage
 from common.utils.image_utils import process_image
 
-def process_playground_image(image_input: str) -> PlaygroundImageOrm:
+def process_playground_image(image_input: str) -> tuple[str, PlaygroundImage]:
     """
-    Given an image input (URL, base64 string, or file path), identify a Outfit object in the image
+    Given an image input (URL, base64 string, or file path), identify a PlaygroundImage object in the image
     """
     # Process the image and get the base64 encoded string and MIME type
     image_data, image_format, processed_file_path = process_image(image_input)
 
-    # Identify the outfit from the image
-    outfit = identify_object_from_image(image_data, PlaygroundImageOrm, image_format)
-    return processed_file_path, outfit
+    # Identify the playground image from the image
+    playground_image = identify_object_from_image(image_data, PlaygroundImage, image_format)
+    return processed_file_path, playground_image
 
 def main(image_str: str):
     # Convert the processed image to an outfit

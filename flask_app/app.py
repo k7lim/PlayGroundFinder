@@ -2,8 +2,8 @@ import os
 from flask import Flask, request, render_template, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 import logging
+from common.schemas import PlaygroundImage
 from common.utils.process_playground_image import process_playground_image
-from common.models import PlaygroundImageOrm
 
 # Add this near the top of your file
 logging.basicConfig(level=logging.DEBUG)
@@ -62,8 +62,11 @@ def upload():
             # Process the uploaded image
             processed_file_path, playground_image = process_playground_image(filepath)
 
+            # Convert Pydantic model to dict for template rendering
+            playground_image_dict = playground_image.dict()
+
             # Render the result page with the processed image path and playground image attributes
-            return render_template('upload_result.html', processed_file_path=processed_file_path, playground_image=playground_image)
+            return render_template('upload_result.html', processed_file_path=processed_file_path, playground_image=playground_image_dict)
         else:
             logging.debug(f"File not allowed: {file.filename}")
     return render_template('upload.html')
