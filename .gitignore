@@ -1,1 +1,27 @@
 .aider*
+# Ignore macOS system files
+.DS_Store
+
+# Ignore Python virtual environment
+flask_app/venv/
+
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+
+# Ignore environment variables file
+.env
+
+# Ignore uploaded files
+flask_app/uploads/
+
+# Ignore IDE-specific files (optional, uncomment if needed)
+# .vscode/
+# .idea/
+
+# Ignore any log files
+*.log
+
+# Ignore database files (if any)
+*.db
+*.sqlite3
