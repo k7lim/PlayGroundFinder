@@ -9,7 +9,7 @@ from common.utils.process_playground_image import process_playground_image
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'uploads/')
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(__file__), 'uploads')
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 # Ensure upload folder exists
@@ -71,8 +71,14 @@ def upload():
             else:
                 playground_image_dict = None
 
+            # Get just the filename from the processed_file_path
+            processed_filename = os.path.basename(processed_file_path)
+
+            app.logger.debug(f"Processed file path: {processed_file_path}")
+            app.logger.debug(f"Processed filename: {processed_filename}")
+
             # Render the result page with the processed image filename and playground image attributes
-            return render_template('upload_result.html', processed_file_path=processed_file_path, playground_image=playground_image_dict)
+            return render_template('upload_result.html', processed_filename=processed_filename, playground_image=playground_image_dict)
         else:
             logging.debug(f"File not allowed: {file.filename}")
     return render_template('upload.html')

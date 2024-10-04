@@ -11,7 +11,9 @@ from requests.exceptions import SSLError, RequestException, HTTPError
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def process_image(image_input: str, max_retries=3, retry_delay=1, output_dir="uploads"):
+from flask import current_app
+
+def process_image(image_input: str, max_retries=3, retry_delay=1):
     """
     Process an image from either a URL, a base64-encoded string, or a file path.
 
@@ -55,6 +57,7 @@ def process_image(image_input: str, max_retries=3, retry_delay=1, output_dir="up
 
     if processed_file_path is None or resized_image != image:
         # Save the processed image to a file
+        output_dir = current_app.config['UPLOAD_FOLDER']
         os.makedirs(output_dir, exist_ok=True)
         processed_file_path = os.path.join(output_dir, f"processed_{int(time.time())}.{image_format}")
         resized_image.save(processed_file_path, format=image_format)
