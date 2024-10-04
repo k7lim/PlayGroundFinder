@@ -2,10 +2,10 @@ from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
-from ..flask_app.models import Base, PlaygroundImageOrm, session, PlaygroundOrm, HostLocationOrm, AddressOrm, LocationOrm, AgeRangeOrm, PlaygroundFeatureOrm
+from common.models import Base, PlaygroundImageOrm, PlaygroundOrm, HostLocationOrm, AddressOrm, LocationOrm, AgeRangeOrm, PlaygroundFeatureOrm
 import os
-from ..flask_app.utils.process_playground_image import process_playground_image
-from  ..flask_app.schemas import PlaygroundImage, Playground
+from common.utils.process_playground_image import process_playground_image
+from common.schemas import PlaygroundImage, Playground
 
 # Create an engine and bind it to the Base
 engine = create_engine('sqlite:///playgrounds.db')

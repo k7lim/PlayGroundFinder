@@ -2,8 +2,8 @@ import os
 from flask import Flask, request, render_template, redirect, send_from_directory
 from werkzeug.utils import secure_filename
 import logging
-from utils.process_playground_image import process_playground_image
-from models import PlaygroundImageOrm
+from common.utils.process_playground_image import process_playground_image
+from common.models import PlaygroundImageOrm
 
 # Add this near the top of your file
 logging.basicConfig(level=logging.DEBUG)
