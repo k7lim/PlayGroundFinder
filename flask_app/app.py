@@ -72,7 +72,7 @@ def upload():
                 playground_image_dict = None
 
             # Render the result page with the processed image filename and playground image attributes
-            return render_template('upload_result.html', processed_filename=processed_filename, playground_image=playground_image_dict)
+            return render_template('upload_result.html', processed_file_path=processed_file_path, playground_image=playground_image_dict)
         else:
             logging.debug(f"File not allowed: {file.filename}")
     return render_template('upload.html')

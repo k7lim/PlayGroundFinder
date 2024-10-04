@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Upload Result</h1>
-<img src="{{ processed_file_path }}" alt="Processed Playground Image" style="max-width: 100%; height: auto;">
+<img src="{{ url_for('uploaded_file', filename=processed_file_path.split('/')[-1]) }}" alt="Processed Playground Image" style="max-width: 100%; height: auto;">
 
 <h2>Extracted Playground Image Attributes</h2>
 <table border="1">

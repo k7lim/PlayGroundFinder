@@ -1,3 +1,8 @@
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 from common.utils.instructor_utils import identify_object_from_image
 from common.schemas import PlaygroundImage
 from common.utils.image_utils import process_image
@@ -8,9 +13,14 @@ def process_playground_image(image_input: str) -> tuple[str, PlaygroundImage]:
     """
     # Process the image and get the base64 encoded string and MIME type
     image_data, image_format, processed_file_path = process_image(image_input)
+    
+    logger.debug(f"Processed file path: {processed_file_path}")
 
     # Identify the playground image from the image
     playground_image = identify_object_from_image(image_data, PlaygroundImage, image_format)
+    
+    logger.debug(f"Identified playground image: {playground_image}")
+    
     return processed_file_path, playground_image
 
 def main(image_str: str):
