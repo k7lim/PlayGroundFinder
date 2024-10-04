@@ -62,8 +62,11 @@ def upload():
             # Process the uploaded image
             processed_file_path, playground_image = process_playground_image(filepath)
 
-            # Convert Pydantic model to dict for template rendering
-            playground_image_dict = playground_image.dict()
+            if playground_image:
+                # Convert Pydantic model to dict for template rendering
+                playground_image_dict = playground_image.dict()
+            else:
+                playground_image_dict = None
 
             # Render the result page with the processed image path and playground image attributes
             return render_template('upload_result.html', processed_file_path=processed_file_path, playground_image=playground_image_dict)

@@ -8,7 +8,7 @@ class AgeRange(BaseModel):
 
 class PlaygroundFeature(BaseModel):
     primary_name: str
-    aliases: Optional[str] = None
+    aliases: List[str] = Field(default_factory=list)
 
 class PlaygroundImage(BaseModel):
     url: str
