@@ -5,7 +5,7 @@ from dotenv import find_dotenv, load_dotenv
 from pydantic import BaseModel
 from typing import Type, TypeVar
 
-from .image_utils import logger, process_image
+from common.utils.image_utils import logger, process_image
 load_dotenv(find_dotenv())
 
 # Define client

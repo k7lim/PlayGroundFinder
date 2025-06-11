@@ -35,6 +35,7 @@ def process_image(image_input: str, max_retries=3, retry_delay=1):
     """
 
     # Save the image to the uploads directory
+    output_dir = current_app.config['UPLOAD_FOLDER']
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     processed_file_path = None
@@ -57,8 +58,6 @@ def process_image(image_input: str, max_retries=3, retry_delay=1):
 
     if processed_file_path is None or resized_image != image:
         # Save the processed image to a file
-        output_dir = current_app.config['UPLOAD_FOLDER']
-        os.makedirs(output_dir, exist_ok=True)
         processed_file_path = os.path.join(output_dir, f"processed_{int(time.time())}.{image_format}")
         resized_image.save(processed_file_path, format=image_format)
         logger.debug(f"Saved processed image to: {processed_file_path}")
